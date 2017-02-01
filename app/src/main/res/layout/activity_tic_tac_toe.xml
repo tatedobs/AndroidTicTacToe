@@ -4,88 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal" >
-    <TableLayout
-        android:id="@+id/play_grid"
+
+    <edu.tatedobson.hhs.tictactoe.BoardView
+        android:id="@+id/board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_weight="0.9">
+        android:layout_marginTop="5dp"/>
 
-        <TableRow
-            android:gravity="center_horizontal"
-            android:layout_weight="0.3">
-            <Button
-                android:id="@+id/zero"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/one"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/two"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-        </TableRow>
-
-        <TableRow
-            android:gravity="center_horizontal"
-            android:layout_weight="0.3">
-            <Button
-                android:id="@+id/three"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/four"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/five"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-        </TableRow>
-
-        <TableRow
-            android:gravity="center_horizontal"
-            android:layout_weight="0.3">
-            <Button
-                android:id="@+id/six"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/seven"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-
-            <Button
-                android:id="@+id/eight"
-                android:layout_weight="0.3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="70sp" />
-        </TableRow>
-    </TableLayout>
     <TextView
         android:id="@+id/information"
         android:layout_width="match_parent"
