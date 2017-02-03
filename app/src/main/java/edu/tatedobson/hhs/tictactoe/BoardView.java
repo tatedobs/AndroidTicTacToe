@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -17,6 +19,11 @@ public class BoardView extends View{
     private Bitmap mHumanBitmap;
     private Bitmap mComputerBitmap;
     private Paint mPaint;
+    private TicTacToeGame mGame;
+
+    public void setGame(TicTacToeGame game) {
+        mGame = game;
+    }
 
     public BoardView(Context context) {
         super(context);
@@ -37,6 +44,13 @@ public class BoardView extends View{
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
+    public int getBoardCellWidth() {
+        return getWidth() / 3;
+    }
+    public int getBoardCellHeight() {
+        return getHeight() / 3;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -55,5 +69,30 @@ public class BoardView extends View{
         // Draw the two horizontal board lines
         canvas.drawLine(0, cellWidth, boardWidth, cellWidth, mPaint);
         canvas.drawLine(0, cellWidth*2, boardWidth, cellWidth*2, mPaint);
+
+        // Draw all the X and O images
+        for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
+            int col = i % 3;
+            int row = i / 3;
+            // Define the boundaries of a destination rectangle for the image
+            int left = col * cellWidth + GRID_WIDTH;
+            int top = row * cellWidth + GRID_WIDTH;
+            int right = col * cellWidth + cellWidth;
+            int bottom = row * cellWidth + cellWidth;
+
+
+            if (mGame != null && mGame.getBoardOccupant(i) == TicTacToeGame.HUMAN_PLAYER) {
+                canvas.drawBitmap(mHumanBitmap,
+                        null, // src
+                        new Rect(left, top, right, bottom), // dest
+                        null);
+            }
+            else if (mGame != null && mGame.getBoardOccupant(i) == TicTacToeGame.COMPUTER_PLAYER) {
+                canvas.drawBitmap(mComputerBitmap,
+                        null, // src
+                        new Rect(left, top, right, bottom), // dest
+                        null);
+            }
+        }
     }
 }

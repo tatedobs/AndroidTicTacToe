@@ -8,12 +8,12 @@ public class TicTacToeGame {
 
     //Array of char representing board
     private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
-    private final int BOARD_SIZE = 9;
 
-    //Constants for player characters
+    //Constants
     public static final char HUMAN_PLAYER = 'X';
     public static final char COMPUTER_PLAYER = 'O';
     public static final char OPEN_SPOT = ' ';
+    public static final int BOARD_SIZE = 9;
 
     //Constants for level of difficulty
     public static final int EASY = 0;
@@ -178,5 +178,9 @@ public class TicTacToeGame {
     //2 for hardest
     public void setDifficultyLevel(int difficultyLevel) {
         mDifficultyLevel = difficultyLevel;
+    }
+
+    public char getBoardOccupant(int pos) {
+        return mBoard[pos];
     }
 }
