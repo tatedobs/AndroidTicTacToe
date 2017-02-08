@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal" >
+
+    <edu.tatedobson.hhs.tictactoe.BoardView
+        android:id="@+id/board"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:layout_gravity="left"/>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="0.3"
+        android:layout_gravity="right"
+        android:paddingRight="30dp">
+        <TextView
+            android:id="@+id/information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:layout_gravity="right"
+            android:layout_weight="0.3"
+            android:text="You go first"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/human_wins"
+            android:layout_gravity="right"
+            android:text="Human: 0"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/ties"
+            android:layout_gravity="right"
+            android:text="Tie: 0"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:id="@+id/android_wins"
+            android:layout_gravity="right"
+            android:text="Android: 0"/>
+    </LinearLayout>
+
+
+</LinearLayout>
