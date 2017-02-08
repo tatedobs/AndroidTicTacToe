@@ -20,7 +20,6 @@ public class DifficultyDialog extends DialogFragment {
                 getResources().getString(R.string.difficulty_easy),
                 getResources().getString(R.string.difficulty_harder),
                 getResources().getString(R.string.difficulty_expert)};
-        // TODO: Set selected, an integer (0 to n-1), for the Difficulty dialog.
         int selected = mGame.getDifficultyLevel();
 
         // selected is the radio button that is selected when the Dialog Box appears.

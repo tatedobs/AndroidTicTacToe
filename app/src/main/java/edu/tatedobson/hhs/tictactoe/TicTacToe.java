@@ -1,6 +1,8 @@
 package edu.tatedobson.hhs.tictactoe;
 
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 public class TicTacToe extends AppCompatActivity implements android.view.View.OnTouchListener{
 
     private TicTacToeGame mGame;
@@ -23,6 +27,11 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
     private int ties = 0;
     private int androidWins = 0;
     private BoardView mBoardView;
+
+    MediaPlayer mHumanMediaPlayer;
+    MediaPlayer mComputerMediaPlayer;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +67,31 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         if(mGame.getBoardOccupant(pos) == ' ' && !mGameOver) {
             setMove(TicTacToeGame.HUMAN_PLAYER, pos);
             if(mGame.checkForWinner() == 0) {
-                setMove(TicTacToeGame.COMPUTER_PLAYER, mGame.getComputerMove());
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        setMove(TicTacToeGame.COMPUTER_PLAYER, mGame.getComputerMove());
+                    }
+                }, 1000);
             }
         }
 
         // So we aren't notified of continued events when finger is moved
         return false;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHumanMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.x_sound);
+        mComputerMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.o_sound);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHumanMediaPlayer.release();
+        mComputerMediaPlayer.release();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,6 +117,12 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
         mBoardView.invalidate();
         mGame.setMove(player, location);
+
+        if(player == TicTacToeGame.HUMAN_PLAYER) {
+            mHumanMediaPlayer.start();
+        } else {
+            mComputerMediaPlayer.start();
+        }
 
         switch(mGame.checkForWinner()) {
             case 1:
