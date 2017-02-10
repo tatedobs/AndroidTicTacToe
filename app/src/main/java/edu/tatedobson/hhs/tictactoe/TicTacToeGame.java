@@ -180,6 +180,14 @@ public class TicTacToeGame {
         mDifficultyLevel = difficultyLevel;
     }
 
+    public char[] getBoardState() {
+        return mBoard;
+    }
+
+    public void setBoardState(char[] board) {
+        mBoard = board;
+    }
+
     public char getBoardOccupant(int pos) {
         return mBoard[pos];
     }

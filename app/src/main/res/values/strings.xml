@@ -16,5 +16,8 @@
     <string name="difficulty_easy">Easy</string>
     <string name="difficulty_harder">Harder</string>
     <string name="difficulty_expert">Expert</string>
+    <string name="ties">"Ties: "</string>
+    <string name="human">"Human: "</string>
+    <string name="android">"Android: "</string>
 
 </resources>

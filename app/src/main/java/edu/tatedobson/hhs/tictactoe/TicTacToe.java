@@ -38,19 +38,33 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tic_tac_toe);
 
+        if (savedInstanceState == null) {
+            startNewGame();
+        }
+        else {
+            mGame.setBoardState(savedInstanceState.getCharArray("board"));
+            mGameOver = savedInstanceState.getBoolean("mGameOver");
+            playerWins = savedInstanceState.getInt("mHumanWins");
+            androidWins = savedInstanceState.getInt("mComputerWins");
+            ties = savedInstanceState.getInt("ties");
+            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
+            mGame.setDifficultyLevel(savedInstanceState.getInt("mDifficulty"));
+        }
+
+
+        startNewGame();
+    }
+
+
+
+
+    private void startNewGame() {
         mBoardView = (BoardView) findViewById(R.id.board);
-
-
         mGameOver = false;
         mGame = new TicTacToeGame();
         mInfoTextView = (TextView)findViewById(R.id.information);
 
         mBoardView.setOnTouchListener(this);
-
-        startNewGame();
-    }
-
-    private void startNewGame() {
         mBoardView.setGame(mGame);
         mGame.clearBoard();
         mGameOver = false;
@@ -64,14 +78,16 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         int row = (int) event.getY() / mBoardView.getBoardCellHeight();
         int pos = row * 3 + col;
 
-        if(mGame.getBoardOccupant(pos) == ' ' && !mGameOver) {
+        if(mGame.getBoardOccupant(pos) == mGame.OPEN_SPOT && !mGameOver) {
             setMove(TicTacToeGame.HUMAN_PLAYER, pos);
             if(mGame.checkForWinner() == 0) {
                 handler.postDelayed(new Runnable() {
                     public void run() {
+                        mGameOver = true;
                         setMove(TicTacToeGame.COMPUTER_PLAYER, mGame.getComputerMove());
+                        mGameOver = false;
                     }
-                }, 1000);
+                }, 500);
             }
         }
 
@@ -114,7 +130,6 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
     }
 
     private void setMove(char player, int location) {
-
         mBoardView.invalidate();
         mGame.setMove(player, location);
 
@@ -129,21 +144,21 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
                 mInfoTextView.setText(R.string.result_tie);
                 ties++;
                 TextView t = (TextView)findViewById(R.id.ties);
-                t.setText("Ties: " + ties);
+                t.setText(getString(R.string.ties) + ties);
                 mGameOver = true;
                 break;
             case 2:
                 mInfoTextView.setText(R.string.result_human_wins);
                 playerWins++;
                 TextView h = (TextView)findViewById(R.id.human_wins);
-                h.setText("Human: " + playerWins);
+                h.setText(getString(R.string.human) + playerWins);
                 mGameOver = true;
                 break;
             case 3:
                 mInfoTextView.setText(R.string.result_computer_wins);
                 androidWins++;
                 TextView a = (TextView)findViewById(R.id.android_wins);
-                a.setText("Android: " + androidWins);
+                a.setText(getString(R.string.android) + androidWins);
                 mGameOver = true;
                 break;
         }
@@ -151,5 +166,18 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
     public TicTacToeGame getGame() {
         return mGame;
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharArray("board", mGame.getBoardState());
+        outState.putBoolean("mGameOver", mGameOver);
+        outState.putInt("mHumanWins", playerWins);
+        outState.putInt("mComputerWins", androidWins);
+        outState.putInt("mTies", ties);
+        outState.putCharSequence("info", mInfoTextView.toString());
+        outState.putInt("mDifficulty", mGame.getDifficultyLevel());
     }
 }
