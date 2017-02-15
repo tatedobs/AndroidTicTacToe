@@ -38,25 +38,20 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tic_tac_toe);
 
-        if (savedInstanceState == null) {
-            startNewGame();
-        }
-        else {
-            mGame.setBoardState(savedInstanceState.getCharArray("board"));
-            mGameOver = savedInstanceState.getBoolean("mGameOver");
-            playerWins = savedInstanceState.getInt("mHumanWins");
-            androidWins = savedInstanceState.getInt("mComputerWins");
-            ties = savedInstanceState.getInt("ties");
-            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            mGame.setDifficultyLevel(savedInstanceState.getInt("mDifficulty"));
-        }
-
-
         startNewGame();
     }
 
-
-
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mGame.setBoardState(savedInstanceState.getCharArray("board"));
+        mGameOver = savedInstanceState.getBoolean("mGameOver");
+        playerWins = savedInstanceState.getInt("mHumanWins");
+        androidWins = savedInstanceState.getInt("mComputerWins");
+        ties = savedInstanceState.getInt("ties");
+        mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
+        mGame.setDifficultyLevel(savedInstanceState.getInt("mDifficulty"));
+    }
 
     private void startNewGame() {
         mBoardView = (BoardView) findViewById(R.id.board);
@@ -81,9 +76,9 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         if(mGame.getBoardOccupant(pos) == mGame.OPEN_SPOT && !mGameOver) {
             setMove(TicTacToeGame.HUMAN_PLAYER, pos);
             if(mGame.checkForWinner() == 0) {
+                mGameOver = true;
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        mGameOver = true;
                         setMove(TicTacToeGame.COMPUTER_PLAYER, mGame.getComputerMove());
                         mGameOver = false;
                     }
@@ -178,6 +173,7 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         outState.putInt("mComputerWins", androidWins);
         outState.putInt("mTies", ties);
         outState.putCharSequence("info", mInfoTextView.toString());
+        Log.d("infoText", mInfoTextView.toString());
         outState.putInt("mDifficulty", mGame.getDifficultyLevel());
     }
 }
