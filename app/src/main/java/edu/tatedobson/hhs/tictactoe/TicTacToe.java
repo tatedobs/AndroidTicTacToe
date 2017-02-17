@@ -1,6 +1,6 @@
 package edu.tatedobson.hhs.tictactoe;
 
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -12,20 +12,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
 
 public class TicTacToe extends AppCompatActivity implements android.view.View.OnTouchListener{
 
     private TicTacToeGame mGame;
     private TextView mInfoTextView;
     private boolean mGameOver;
-    private int playerWins = 0;
-    private int ties = 0;
-    private int androidWins = 0;
+    private int playerWins;
+    private int ties;
+    private int androidWins;
     private BoardView mBoardView;
 
     MediaPlayer mHumanMediaPlayer;
@@ -33,32 +30,47 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
     Handler handler = new Handler();
 
+    private SharedPreferences mPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tic_tac_toe);
 
-        startNewGame();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mGame.setBoardState(savedInstanceState.getCharArray("board"));
-        mGameOver = savedInstanceState.getBoolean("mGameOver");
-        playerWins = savedInstanceState.getInt("mHumanWins");
-        androidWins = savedInstanceState.getInt("mComputerWins");
-        ties = savedInstanceState.getInt("ties");
-        mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-        mGame.setDifficultyLevel(savedInstanceState.getInt("mDifficulty"));
-    }
-
-    private void startNewGame() {
         mBoardView = (BoardView) findViewById(R.id.board);
         mGameOver = false;
         mGame = new TicTacToeGame();
         mInfoTextView = (TextView)findViewById(R.id.information);
 
+        startNewGame();
+
+        // mPrefs stores preferences after app is closed
+        mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+
+
+        // Setting all values equal to values stored in mPrefs
+        playerWins = mPrefs.getInt("mHumanWins", 0);
+        androidWins = mPrefs.getInt("mComputerWins", 0);
+        ties = mPrefs.getInt("ties", 0);
+
+        mGame.setDifficultyLevel(mPrefs.getInt("mDifficulty", 0));
+        mGame.setBoardState(mPrefs.getString("board", "         ").toCharArray());
+        mInfoTextView.setText(mPrefs.getString("info", "You go first"));
+
+        mGameOver = mPrefs.getBoolean("mGameOver", false);
+
+
+        // Refreshing win text, so it displays correct number
+        TextView t = (TextView)findViewById(R.id.ties);
+        t.setText(getString(R.string.ties) + ties);
+        TextView h = (TextView)findViewById(R.id.human_wins);
+        h.setText(getString(R.string.human) + playerWins);
+        TextView a = (TextView)findViewById(R.id.android_wins);
+        a.setText(getString(R.string.android) + androidWins);
+
+    }
+
+    private void startNewGame() {
         mBoardView.setOnTouchListener(this);
         mBoardView.setGame(mGame);
         mGame.clearBoard();
@@ -103,6 +115,25 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         mComputerMediaPlayer.release();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Save the current scores
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("mHumanWins", playerWins);
+        ed.putInt("mComputerWins", androidWins);
+        ed.putInt("mTies", ties);
+
+        ed.putInt("mDifficulty", mGame.getDifficultyLevel());
+        ed.putBoolean("mGameOver", mGameOver);
+
+        String s = new String(mGame.getBoardState());
+        ed.putString("board", s);
+        ed.putString("info", mInfoTextView.getText().toString());
+        ed.commit();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,7 +150,6 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
             case R.id.action_difficulty:
                 DialogFragment newFragment = new DifficultyDialog();
                 newFragment.show(getSupportFragmentManager(), "dialog");
-                startNewGame();
         }
         return true;
     }
@@ -161,19 +191,5 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
     public TicTacToeGame getGame() {
         return mGame;
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putCharArray("board", mGame.getBoardState());
-        outState.putBoolean("mGameOver", mGameOver);
-        outState.putInt("mHumanWins", playerWins);
-        outState.putInt("mComputerWins", androidWins);
-        outState.putInt("mTies", ties);
-        outState.putCharSequence("info", mInfoTextView.toString());
-        Log.d("infoText", mInfoTextView.toString());
-        outState.putInt("mDifficulty", mGame.getDifficultyLevel());
     }
 }
