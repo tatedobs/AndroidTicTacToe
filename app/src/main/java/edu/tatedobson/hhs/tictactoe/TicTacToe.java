@@ -1,8 +1,10 @@
 package edu.tatedobson.hhs.tictactoe;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +30,9 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
     MediaPlayer mHumanMediaPlayer;
     MediaPlayer mComputerMediaPlayer;
 
+    String mPlayerVictoryMessage;
+    boolean mSoundOn = true;
+
     Handler handler = new Handler();
 
     private SharedPreferences mPrefs;
@@ -41,6 +46,8 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         mGameOver = false;
         mGame = new TicTacToeGame();
         mInfoTextView = (TextView)findViewById(R.id.information);
+
+        mPlayerVictoryMessage = getString(R.string.result_human_wins);
 
         startNewGame();
 
@@ -70,7 +77,7 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
     }
 
-    private void startNewGame() {
+    public void startNewGame() {
         mBoardView.setOnTouchListener(this);
         mBoardView.setGame(mGame);
         mGame.clearBoard();
@@ -102,12 +109,6 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         return false;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mHumanMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.x_sound);
-        mComputerMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.o_sound);
-    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -150,19 +151,52 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
             case R.id.action_difficulty:
                 DialogFragment newFragment = new DifficultyDialog();
                 newFragment.show(getSupportFragmentManager(), "dialog");
+                break;
+            case R.id.clear_wins:
+                playerWins = 0;
+                androidWins = 0;
+                ties = 0;
+                startNewGame();
+                // Refreshing win text, so it displays correct number
+                TextView t = (TextView)findViewById(R.id.ties);
+                t.setText(getString(R.string.ties) + ties);
+                TextView h = (TextView)findViewById(R.id.human_wins);
+                h.setText(getString(R.string.human) + playerWins);
+                TextView a = (TextView)findViewById(R.id.android_wins);
+                a.setText(getString(R.string.android) + androidWins);
+                break;
+            case R.id.action_settings:
+                startActivity(new Intent(this, Settings.class));
+                return true;
+
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHumanMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.x_sound);
+        mComputerMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.o_sound);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSoundOn = prefs.getBoolean("sound", true);
+        mPlayerVictoryMessage = prefs.getString("victory_message", getString(R.string.victory_message));
+        String diffLevel = prefs.getString("difficulty_level", getString(R.string.difficulty_harder));
     }
 
     private void setMove(char player, int location) {
         mBoardView.invalidate();
         mGame.setMove(player, location);
 
-        if(player == TicTacToeGame.HUMAN_PLAYER) {
-            mHumanMediaPlayer.start();
-        } else {
-            mComputerMediaPlayer.start();
+        if(mSoundOn) {
+            if(player == TicTacToeGame.HUMAN_PLAYER) {
+                mHumanMediaPlayer.start();
+            } else {
+                mComputerMediaPlayer.start();
+            }
         }
+
 
         switch(mGame.checkForWinner()) {
             case 1:
@@ -173,7 +207,7 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
                 mGameOver = true;
                 break;
             case 2:
-                mInfoTextView.setText(R.string.result_human_wins);
+                mInfoTextView.setText(mPlayerVictoryMessage);
                 playerWins++;
                 TextView h = (TextView)findViewById(R.id.human_wins);
                 h.setText(getString(R.string.human) + playerWins);

@@ -27,7 +27,11 @@ public class DifficultyDialog extends DialogFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         dialog.dismiss(); // Close dialog
+                        if(mGame.getDifficultyLevel() == item) {
+                            return;
+                        }
                         mGame.setDifficultyLevel(item);
+                        ((TicTacToe)getActivity()).startNewGame();
                     }
                 });
         dialog = builder.create();
