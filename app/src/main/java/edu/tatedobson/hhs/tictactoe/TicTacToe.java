@@ -75,6 +75,11 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         TextView a = (TextView)findViewById(R.id.android_wins);
         a.setText(getString(R.string.android) + androidWins);
 
+        mInfoTextView.setTextColor(getResources().getColor(R.color.text));
+        t.setTextColor(getResources().getColor(R.color.text));
+        h.setTextColor(getResources().getColor(R.color.text));
+        a.setTextColor(getResources().getColor(R.color.text));
+
     }
 
     public void startNewGame() {

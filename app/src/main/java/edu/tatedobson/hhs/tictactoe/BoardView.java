@@ -59,7 +59,7 @@ public class BoardView extends View{
         int boardWidth = getWidth();
         int boardHeight = getHeight();
         // Make thick, light gray lines
-        mPaint.setColor(Color.BLUE);
+        mPaint.setColor(Color.GRAY);
         mPaint.setStrokeWidth(GRID_WIDTH);
 
         // Draw the two vertical board lines
