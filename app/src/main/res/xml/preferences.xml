@@ -4,11 +4,12 @@
     <CheckBoxPreference
         android:key="sound"
         android:title="Sound"
-        android:defaultValue="true"
-        android:summary="Turn the sound on or off" />
+        android:id="@+id/enable_sound"
+        android:defaultValue="true" />
     <EditTextPreference
         android:key="victory_message"
         android:summary=""
+        android:id="@+id/change_victory_text"
         android:defaultValue="@string/result_human_wins"
         android:title="@string/victory_message" />
 

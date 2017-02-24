@@ -58,7 +58,7 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         // Setting all values equal to values stored in mPrefs
         playerWins = mPrefs.getInt("mHumanWins", 0);
         androidWins = mPrefs.getInt("mComputerWins", 0);
-        ties = mPrefs.getInt("ties", 0);
+        ties = mPrefs.getInt("mTies", 0);
 
         mGame.setDifficultyLevel(mPrefs.getInt("mDifficulty", 0));
         mGame.setBoardState(mPrefs.getString("board", "         ").toCharArray());
@@ -70,15 +70,14 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
         // Refreshing win text, so it displays correct number
         TextView t = (TextView)findViewById(R.id.ties);
         t.setText(getString(R.string.ties) + ties);
+        t.setTextColor(getResources().getColor(R.color.text));
         TextView h = (TextView)findViewById(R.id.human_wins);
         h.setText(getString(R.string.human) + playerWins);
+        h.setTextColor(getResources().getColor(R.color.text));
         TextView a = (TextView)findViewById(R.id.android_wins);
         a.setText(getString(R.string.android) + androidWins);
-
-        mInfoTextView.setTextColor(getResources().getColor(R.color.text));
-        t.setTextColor(getResources().getColor(R.color.text));
-        h.setTextColor(getResources().getColor(R.color.text));
         a.setTextColor(getResources().getColor(R.color.text));
+        mInfoTextView.setTextColor(getResources().getColor(R.color.text));
 
     }
 
@@ -127,9 +126,9 @@ public class TicTacToe extends AppCompatActivity implements android.view.View.On
 
         // Save the current scores
         SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("mTies", ties);
         ed.putInt("mHumanWins", playerWins);
         ed.putInt("mComputerWins", androidWins);
-        ed.putInt("mTies", ties);
 
         ed.putInt("mDifficulty", mGame.getDifficultyLevel());
         ed.putBoolean("mGameOver", mGameOver);

@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".Settings"
             android:label="Settings"
+            android:theme="@style/PreferenceScreen"
             android:parentActivityName=".TicTacToe" >
         </activity>
     </application>
